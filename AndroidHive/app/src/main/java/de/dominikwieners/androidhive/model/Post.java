@@ -4,8 +4,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +11,14 @@ import java.util.List;
  * Created by dominikwieners on 13.08.17.
  */
 
-public class PostList {
+public class Post {
 
-    @SerializedName("slug")
-    private String slug;
+
+    @SerializedName("id")
+    private int id;
+
+    @SerializedName("featured_media")
+    private int featured_media;
 
     @SerializedName("title")
     private JsonObject title;
@@ -26,9 +28,15 @@ public class PostList {
 
 
 
-    public String getSlug() {
-        return slug;
+
+    public int getId() {
+        return id;
     }
+
+    public int getFeatured_media() {
+        return featured_media;
+    }
+
 
     public JsonObject getTitle() {
         return title;
@@ -38,8 +46,16 @@ public class PostList {
         return excerpt;
     }
 
-    public void setSlug(String slug) {
-        this.slug = slug;
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+
+    public void setFeatured_media(int featured_media) {
+        this.featured_media = featured_media;
     }
 
     public void setTitle(JsonObject title) {
