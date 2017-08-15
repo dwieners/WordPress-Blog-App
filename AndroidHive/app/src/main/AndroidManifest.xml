@@ -23,9 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".app.MainActivity"></activity>
-        <activity
-            android:name=".app.PostActivity"
-            android:parentActivityName=".app.MainActivity" />
+        <activity android:name=".app.PostActivity" />
 
     </application>
 

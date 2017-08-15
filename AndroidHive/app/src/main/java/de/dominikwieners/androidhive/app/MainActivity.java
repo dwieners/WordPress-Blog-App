@@ -64,12 +64,12 @@ public class MainActivity extends AppCompatActivity {
             call.enqueue(new Callback<List<Post>>() {
                 @Override
                 public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                    progressDoalog.dismiss();
                     Log.d("RetrofitResponse", "Status Code " + response.code());
                     postItemList = response.body();
                     postList.setHasFixedSize(true);
                     postList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                     postList.setAdapter(new PostAdapter(getApplicationContext(), postItemList));
+                    progressDoalog.dismiss();
 
 
 
@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<List<Post>> call, Throwable t) {
-                    progressDoalog.dismiss();
                     Log.d("RetrofitResponse", "Error");
+                    progressDoalog.dismiss();
                 }
             });
 
@@ -93,6 +93,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
     }
 }

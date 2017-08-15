@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -72,6 +73,13 @@ public class PostActivity extends AppCompatActivity {
         initCollapsingToolbar(title);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        postToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         //Set TitleText and ContentText
         postTitle = (TextView) findViewById(R.id.post_title);
