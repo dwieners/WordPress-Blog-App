@@ -26,6 +26,9 @@ public class Post {
     @SerializedName("excerpt")
     private JsonObject excerpt;
 
+    @SerializedName("content")
+    private JsonObject content;
+
 
 
 
@@ -46,7 +49,9 @@ public class Post {
         return excerpt;
     }
 
-
+    public JsonObject getContent() {
+        return content;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -64,5 +69,9 @@ public class Post {
 
     public void setExcerpt(JsonObject excerpt) {
         this.excerpt = excerpt;
+    }
+
+    public void setContent(JsonObject content) {
+        this.content = content;
     }
 }

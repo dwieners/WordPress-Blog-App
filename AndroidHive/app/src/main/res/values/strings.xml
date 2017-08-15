@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">AndroidHive</string>
-    <string name="loading_dialog_title">Coffee Time ...</string>
+    <string name="splash_screen_info">© 2017 Copyright Dominik Wieners</string>
+    <string name="progressdialog_title">Please wait...</string>
+    <string name="progressdialog_message">Loading...</string>
 </resources>
