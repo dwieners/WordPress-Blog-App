@@ -107,6 +107,7 @@ public class PostAdapter extends RecyclerView.Adapter{
             cardPt.setText(Html.fromHtml(title,Html.FROM_HTML_MODE_LEGACY));
             cardEx.setText(Html.fromHtml(excerpt,Html.FROM_HTML_MODE_LEGACY));
 
+
         }
 
 
@@ -116,7 +117,8 @@ public class PostAdapter extends RecyclerView.Adapter{
             String title = currentPost.getTitle().get("rendered").toString().replaceAll("\"", "");
             String content = currentPost.getContent().get("rendered").toString().replaceAll("\"", "");
 
-            Intent intent = PostActivity.createIntent(v.getContext(), currentPost.getId(), currentPost.getFeatured_media(), Html.fromHtml(title, Html.FROM_HTML_MODE_LEGACY).toString() , Html.fromHtml(content,Html.FROM_HTML_MODE_LEGACY).toString());
+
+            Intent intent = PostActivity.createIntent(v.getContext(), currentPost.getId(), currentPost.getFeatured_media(), Html.fromHtml(title, Html.FROM_HTML_MODE_LEGACY).toString() , content);
             v.getContext().startActivity(intent);
         }
     }
