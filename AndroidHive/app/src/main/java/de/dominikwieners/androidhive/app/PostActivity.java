@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -23,7 +25,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import java.io.IOException;
 
 import de.dominikwieners.androidhive.R;
 import de.dominikwieners.androidhive.model.Media;
@@ -40,6 +41,8 @@ public class PostActivity extends AppCompatActivity {
     ImageView postBackdrop;
 
     View parentView;
+
+    boolean isItemSelected = false;
 
     public static Intent createIntent(Context context, int id, int featuredMedia, String title, String content){
         Intent intent = new Intent(context, PostActivity.class);
@@ -66,8 +69,11 @@ public class PostActivity extends AppCompatActivity {
 
         initPost(title, content);
 
+        initWebView(content);
 
-       //Call Media
+
+
+        //Call Media
         if(InternetConnection.checkInternetConnection(getApplicationContext())) {
             ApiService api = WordPressClient.getApiService();
 
@@ -100,6 +106,7 @@ public class PostActivity extends AppCompatActivity {
 
                 }
             });
+
         }else{
             Snackbar.make(parentView, "Can't connect to the Internet", Snackbar.LENGTH_INDEFINITE);
         }
@@ -108,12 +115,8 @@ public class PostActivity extends AppCompatActivity {
 
     //Init Toolbar but do not set media
     private void initPost(String title, String content ){
-        //Set TitleText and ContentText
 
-        final ProgressDialog progressDoalog;
-        progressDoalog = new ProgressDialog(PostActivity.this);
-        progressDoalog.setTitle(getString(R.string.progressdialog_title));
-        progressDoalog.setMessage(getString(R.string.progressdialog_message));
+
 
 
         postBackdrop = (ImageView) findViewById(R.id.post_backdrop);
@@ -123,35 +126,30 @@ public class PostActivity extends AppCompatActivity {
 
         postContent = (WebView) findViewById(R.id.webview);
 
-        content = "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\" />" +
-                "<script src=\"prism.js\"></script>" +
-                "<div class=\"content\">" + content+ "</div>";
-
-        postContent.getSettings().setLoadsImagesAutomatically(true);
-        postContent.getSettings().setJavaScriptEnabled(true);
-        postContent.setWebViewClient(new WebViewClient(){
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                progressDoalog.show();
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                progressDoalog.dismiss();
-
-            }
-        });
-
-        postContent.loadDataWithBaseURL("file:///android_asset/*",content, "text/html; charset=utf-8", "UTF-8", null);
 
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        //Toggle Navigation icon
+
+        if(!isItemSelected){
+            item.setIcon(getResources().getDrawable(R.drawable.ic_favorite_white_24dp,getTheme()));
+            isItemSelected = true;
+        }else {
+            item.setIcon(getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp,getTheme()));
+            isItemSelected = false;
+        }
+
+        return super.onOptionsItemSelected(item);
+
+    }
+
+
 
     private class MyWebView extends WebViewClient {
-
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -197,5 +195,55 @@ public class PostActivity extends AppCompatActivity {
         collapsingToolbar.setTitle(" ");
 
     }
+
+
+
+
+    private void initWebView(String content){
+
+        //Init ProgressDialog
+        final ProgressDialog progressDialog;
+        progressDialog = new ProgressDialog(PostActivity.this);
+        progressDialog.setTitle(getString(R.string.progressdialog_title));
+        progressDialog.setMessage(getString(R.string.progressdialog_message));
+
+        //Set Html content
+        content = "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\" />" +
+                "<script src=\"prism.js\"></script>" +
+                "<div class=\"content\">" + content+ "</div>";
+
+        postContent.getSettings().setLoadsImagesAutomatically(true);
+        postContent.getSettings().setJavaScriptEnabled(true);
+        postContent.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                progressDialog.show();
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                progressDialog.dismiss();
+
+            }
+        });
+
+        postContent.loadDataWithBaseURL("file:///android_asset/*",content, "text/html; charset=utf-8", "UTF-8", null);
+    }
+
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.add_to_favorite_menu, menu);
+        return true;
+    }
+
+
+
+
+
 
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context = ".app.PostActivity">
+
+    <item
+        android:id="@+id/add_as_favorite"
+        android:icon="@drawable/ic_favorite_border_white_24dp"
+        android:title="@string/add_as_favorite"
+        app:showAsAction="always" />
+
+
+</menu>
