@@ -4,4 +4,7 @@
     <string name="progressdialog_title">Please wait...</string>
     <string name="progressdialog_message">Loading...</string>
     <string name="add_as_favorite">add</string>
+    <string name="drawer_menu_favorites">Favorites</string>
+    <string name="open_drawer">Open navigation drawer</string>
+    <string name="close_drawer">Close navigation drawer</string>
 </resources>

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -173,6 +174,9 @@ public class PostActivity extends AppCompatActivity {
 
     //Init Toolbar
     private void initToolbar(String title){
+
+        //Set StatusBarColor transparent
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
         //Set Toolbar
         postToolbar = (Toolbar) findViewById(R.id.postToolbar);
         setSupportActionBar(postToolbar);
@@ -211,6 +215,9 @@ public class PostActivity extends AppCompatActivity {
         content = "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\" />" +
                 "<script src=\"prism.js\"></script>" +
                 "<div class=\"content\">" + content+ "</div>";
+
+
+        Log.d("WebViewContent", content);
 
         postContent.getSettings().setLoadsImagesAutomatically(true);
         postContent.getSettings().setJavaScriptEnabled(true);

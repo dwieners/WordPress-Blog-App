@@ -8,18 +8,11 @@
     android:id="@+id/parentLayout"
     tools:context="de.dominikwieners.androidhive.app.MainActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/androidhive2x" />
 
-    </android.support.v7.widget.Toolbar>
+
+
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/postRecycler"
@@ -29,6 +22,7 @@
         android:paddingBottom="8dp"
         android:clipToPadding="false"
         android:scrollbars="vertical" />
+
 
 
 </LinearLayout>

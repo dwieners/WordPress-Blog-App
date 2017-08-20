@@ -1,13 +1,18 @@
 package de.dominikwieners.androidhive.app;
 
 import android.app.ProgressDialog;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
@@ -25,26 +30,53 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private Toolbar toolbar;
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
 
     private RecyclerView postList;
     private View parentView;
+
     private List<Post> postItemList;
-    private List<Media> postMediaItemList;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.navigation_drawer);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
 
         postList = (RecyclerView) findViewById(R.id.postRecycler);
         parentView = findViewById(R.id.parentLayout);
 
+        navigationView.setNavigationItemSelectedListener(this);
 
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
+        drawerLayout.setDrawerListener(toggle);
+
+        toggle.syncState();
+
+        setListContent();
+
+
+
+
+    }
+
+
+
+
+
+
+    public void setListContent(){
 
         if(InternetConnection.checkInternetConnection(getApplicationContext())) {
 
@@ -88,17 +120,20 @@ public class MainActivity extends AppCompatActivity {
 
 
         }else{
-            Snackbar.make(parentView, "Can't connect to the Internet", Snackbar.LENGTH_INDEFINITE);
+            Snackbar.make(parentView, "Can't connect to the Internet", Snackbar.LENGTH_INDEFINITE).show();
         }
-
-
-
-
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
+        int id = item.getItemId();
+
+        switch (id){
+            case R.id.my_favorites:
+                break;
+        }
+
+        return true;
     }
 }
