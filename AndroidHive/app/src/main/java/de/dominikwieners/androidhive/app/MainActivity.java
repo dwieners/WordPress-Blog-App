@@ -1,10 +1,12 @@
 package de.dominikwieners.androidhive.app;
 
 import android.app.ProgressDialog;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,16 +15,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
 
 import de.dominikwieners.androidhive.R;
 import de.dominikwieners.androidhive.adapter.PostAdapter;
-import de.dominikwieners.androidhive.model.Media;
 import de.dominikwieners.androidhive.model.Post;
 import de.dominikwieners.androidhive.util.InternetConnection;
 import retrofit2.Call;
@@ -37,10 +34,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
 
     private RecyclerView postList;
-    private View parentView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private List<Post> postItemList;
-
 
 
     @Override
@@ -55,7 +51,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
 
         postList = (RecyclerView) findViewById(R.id.postRecycler);
-        parentView = findViewById(R.id.parentLayout);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.parentLayout);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                Log.d("Swipe", "Refreshing");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                        setListContent(false);
+                    }
+                }, 3000);
+            }
+        });
 
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -64,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         toggle.syncState();
 
-        setListContent();
+        setListContent(true);
 
 
 
@@ -72,26 +84,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    public void setListContent(final boolean withProgress) {
 
-
-
-
-    public void setListContent(){
-
-        if(InternetConnection.checkInternetConnection(getApplicationContext())) {
+        if (InternetConnection.checkInternetConnection(getApplicationContext())) {
 
 
             ApiService api = WordPressClient.getApiService();
 
             Call<List<Post>> call = api.getPosts();
 
-            // Set up progress before call
-            final ProgressDialog progressDoalog;
-            progressDoalog = new ProgressDialog(MainActivity.this);
-            progressDoalog.setTitle(getString(R.string.progressdialog_title));
-            progressDoalog.setMessage(getString(R.string.progressdialog_message));
 
-            progressDoalog.show();
+            final ProgressDialog progressDialog;
+            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setTitle(getString(R.string.progressdialog_title));
+            progressDialog.setMessage(getString(R.string.progressdialog_message));
+
+            if(withProgress) {
+                progressDialog.show();
+            }
 
             call.enqueue(new Callback<List<Post>>() {
                 @Override
@@ -101,8 +111,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     postList.setHasFixedSize(true);
                     postList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                     postList.setAdapter(new PostAdapter(getApplicationContext(), postItemList));
-                    progressDoalog.dismiss();
 
+                    if(withProgress) {
+                        progressDialog.dismiss();
+                    }
 
 
                 }
@@ -110,17 +122,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void onFailure(Call<List<Post>> call, Throwable t) {
                     Log.d("RetrofitResponse", "Error");
-                    progressDoalog.dismiss();
+                    if(withProgress) {
+                        progressDialog.dismiss();
+                    }
                 }
             });
 
 
-
-
-
-
-        }else{
-            Snackbar.make(parentView, "Can't connect to the Internet", Snackbar.LENGTH_INDEFINITE).show();
+        } else {
+            Snackbar.make(swipeRefreshLayout, "Can't connect to the Internet", Snackbar.LENGTH_INDEFINITE).show();
         }
     }
 
@@ -129,11 +139,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         int id = item.getItemId();
 
-        switch (id){
+        switch (id) {
             case R.id.my_favorites:
                 break;
         }
 
         return true;
     }
+
+
 }
