@@ -78,16 +78,40 @@ public class PostDB {
         }
     }
 
-        /********
-         * READ
-         */
+    /********
+     * READ
+     */
+
+    public List<Post> getAllDbPosts(){
+
+        TodoItemDbHelper helper = new TodoItemDbHelper(context);
+        SQLiteDatabase sqLiteDatabase = helper.getReadableDatabase();
+        ArrayList<Post> postList = new ArrayList<>();
+        try {
+            Cursor cursor = sqLiteDatabase.query(PostItem.TABLE_NAME, new String[]{PostItem._ID, PostItem.COLNAME_POSTID, PostItem.COLNAME_TITLE, PostItem.COLNAME_ISFAV}, null, null, null, null, null);
+
+            try {
+                while (cursor.moveToNext()) {
+                    Post tmpPost = new Post(cursor.getInt(0), cursor.getInt(1), cursor.getString(2), cursor.getInt(3));
+                    postList.add(tmpPost);
+                }
+
+            } finally {
+                cursor.close();
+            }
+        }finally {
+            sqLiteDatabase.close();
+        }
+
+        return postList;
+    }
+
+
 
     public boolean getDbPostIsFav(int postID){
 
         TodoItemDbHelper helper = new TodoItemDbHelper(context);
-
         SQLiteDatabase sqLiteDatabase = helper.getReadableDatabase();
-
         ArrayList<Post> postList = new ArrayList<>();
 
         boolean isFavorite = false;

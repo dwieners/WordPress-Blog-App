@@ -22,9 +22,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".app.MainActivity"></activity>
+        <activity android:name=".app.MainActivity" />
         <activity android:name=".app.PostActivity" />
-
+        <activity android:name=".app.FavoritePostsActivity"></activity>
     </application>
 
 </manifest>

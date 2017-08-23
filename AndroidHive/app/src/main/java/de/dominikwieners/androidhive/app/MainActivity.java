@@ -1,10 +1,12 @@
 package de.dominikwieners.androidhive.app;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -141,9 +143,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
             case R.id.my_favorites:
+                Intent intent = new Intent(getApplicationContext(), FavoritePostsActivity.class);
+                startActivity(intent);
                 break;
         }
 
+        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
