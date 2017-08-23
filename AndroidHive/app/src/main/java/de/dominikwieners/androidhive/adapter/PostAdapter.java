@@ -117,10 +117,11 @@ public class PostAdapter extends RecyclerView.Adapter{
 
             String title = currentPost.getTitle().get("rendered").toString().replaceAll("\"", "");
             String content = currentPost.getContent().get("rendered").toString().replaceAll("\"", "");
+            String excerpt = currentPost.getExcerpt().get("rendered").toString().replaceAll("\"", "");
 
             content = contentFilter(content, "<ins", "</ins>");
 
-            Intent intent = PostActivity.createIntent(v.getContext(), currentPost.getId(), currentPost.getFeatured_media(), Html.fromHtml(title, Html.FROM_HTML_MODE_LEGACY).toString() , content);
+            Intent intent = PostActivity.createIntent(v.getContext(), currentPost.getId(), currentPost.getFeatured_media(), Html.fromHtml(title, Html.FROM_HTML_MODE_LEGACY).toString() , excerpt, content);
             v.getContext().startActivity(intent);
         }
 

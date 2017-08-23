@@ -30,8 +30,35 @@ public class Post {
     private JsonObject content;
 
 
+    //Variable for SQLite
+    private int sqLiteId;
+    private int wpPostId;
+    private String wpTitle;
+    private String wpExcerpt;
+    private String wpContent;
+
+    private boolean isFavorite;
+
+    public Post(){
+
+    }
+
+    public Post(int sqLiteId, int wpPostId, String wpTitle, int isFavorite) {
+
+        this.sqLiteId = sqLiteId;
+        this.wpPostId = wpPostId;
+        this.wpTitle = wpTitle;
+        this.wpExcerpt = wpExcerpt;
+        this.wpContent = wpContent;
+
+        this.isFavorite = false;
+        if(isFavorite == 1){
+            this.isFavorite = true;
+        }
+    }
 
 
+    // Getter
     public int getId() {
         return id;
     }
@@ -39,7 +66,6 @@ public class Post {
     public int getFeatured_media() {
         return featured_media;
     }
-
 
     public JsonObject getTitle() {
         return title;
@@ -53,11 +79,40 @@ public class Post {
         return content;
     }
 
-    public void setId(int id) {
-        this.id = id;
+
+    //Gette SQLite
+
+    public int getSqLiteId() {
+        return sqLiteId;
+    }
+
+    public int getWpPostId() {
+        return wpPostId;
+    }
+
+    public String getWpTitle() {
+        return wpTitle;
+    }
+
+    public String getWpExcerpt() {
+        return wpExcerpt;
+    }
+
+    public String getWpContent() {
+        return wpContent;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
     }
 
 
+
+
+    //Setter
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public void setFeatured_media(int featured_media) {
         this.featured_media = featured_media;
@@ -73,5 +128,31 @@ public class Post {
 
     public void setContent(JsonObject content) {
         this.content = content;
+    }
+
+
+    //SetterSQLite
+    public void setSqLiteId(int sqLiteId) {
+        this.sqLiteId = sqLiteId;
+    }
+
+    public void setWpPostId(int wpPostId) {
+        this.wpPostId = wpPostId;
+    }
+
+    public void setWpTitle(String wpTitle) {
+        this.wpTitle = wpTitle;
+    }
+
+    public void setWpExcerpt(String wpExcerpt) {
+        this.wpExcerpt = wpExcerpt;
+    }
+
+    public void setWpContent(String wpContent) {
+        this.wpContent = wpContent;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 }

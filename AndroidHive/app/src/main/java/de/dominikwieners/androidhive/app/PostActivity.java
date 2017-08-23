@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -29,6 +30,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import de.dominikwieners.androidhive.R;
 import de.dominikwieners.androidhive.model.Media;
+import de.dominikwieners.androidhive.sqlite.PostDB;
 import de.dominikwieners.androidhive.util.InternetConnection;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,20 +38,22 @@ import retrofit2.Response;
 
 public class PostActivity extends AppCompatActivity {
 
-    Toolbar postToolbar;
-    TextView postTitle;
-    WebView postContent;
-    ImageView postBackdrop;
+    private Toolbar postToolbar;
+    private TextView postTitle;
+    private WebView postContent;
+    private ImageView postBackdrop;
 
     View parentView;
 
-    boolean isItemSelected = false;
+    boolean isItemSelected;
 
-    public static Intent createIntent(Context context, int id, int featuredMedia, String title, String content){
+
+    public static Intent createIntent(Context context, int id, int featuredMedia, String title, String excerpt, String content){
         Intent intent = new Intent(context, PostActivity.class);
         //Setzen des wertes aus dem Intent
         intent.putExtra("de.dominikwieners.androidhive.postId", id);
         intent.putExtra("de.dominikwieners.androidhive.featuredMedia",featuredMedia);
+        intent.putExtra("de.dominikwieners.androidhive.postExcerpt", excerpt);
         intent.putExtra("de.dominikwieners.androidhive.postTitle", title);
         intent.putExtra("de.dominikwieners.androidhive.postContent",content);
         return intent;
@@ -66,9 +70,10 @@ public class PostActivity extends AppCompatActivity {
         String title =  getIntent().getSerializableExtra("de.dominikwieners.androidhive.postTitle").toString();
         String content = getIntent().getSerializableExtra("de.dominikwieners.androidhive.postContent").toString().replaceAll("\\\\n", "").replaceAll("\\\\r", "").replaceAll("\\\\", "");;
 
-        initToolbar(title);
 
-        initPost(title, content);
+        initToolbar(title, id);
+
+        initPost(title);
 
         initWebView(content);
 
@@ -79,7 +84,6 @@ public class PostActivity extends AppCompatActivity {
             ApiService api = WordPressClient.getApiService();
 
             Call<Media> call = api.getPostThumbnail(featuredMedia);
-
 
             call.enqueue(new Callback<Media>() {
                 @Override
@@ -104,45 +108,52 @@ public class PostActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<Media> call, Throwable t) {
-
+                    Log.d("RetrofitResponse", "Error");
                 }
             });
 
         }else{
-            Snackbar.make(parentView, "Can't connect to the Internet", Snackbar.LENGTH_INDEFINITE);
+            Snackbar.make(parentView, "Can't connect to the Internet", Snackbar.LENGTH_INDEFINITE).show();
         }
 
     }
 
     //Init Toolbar but do not set media
-    private void initPost(String title, String content ){
-
-
-
+    private void initPost(String title){
 
         postBackdrop = (ImageView) findViewById(R.id.post_backdrop);
-
         postTitle = (TextView) findViewById(R.id.post_title);
         postTitle.setText(title);
-
         postContent = (WebView) findViewById(R.id.webview);
 
-
-
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        //Get Intent
+        int id = (int) getIntent().getSerializableExtra("de.dominikwieners.androidhive.postId");
+        String title =  getIntent().getSerializableExtra("de.dominikwieners.androidhive.postTitle").toString();
+        String excerpt = getIntent().getSerializableExtra("de.dominikwieners.androidhive.postExcerpt").toString();
+        String content = getIntent().getSerializableExtra("de.dominikwieners.androidhive.postContent").toString().replaceAll("\\\\n", "").replaceAll("\\\\r", "").replaceAll("\\\\", "");
+
         //Toggle Navigation icon
+
 
         if(!isItemSelected){
             item.setIcon(getResources().getDrawable(R.drawable.ic_favorite_white_24dp,getTheme()));
+
             isItemSelected = true;
+            PostDB.getInstance(getApplicationContext()).insert(id, title, isItemSelected);
         }else {
             item.setIcon(getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp,getTheme()));
             isItemSelected = false;
+
+            PostDB.getInstance(getApplicationContext()).delete(id);
         }
+
 
         return super.onOptionsItemSelected(item);
 
@@ -173,7 +184,7 @@ public class PostActivity extends AppCompatActivity {
 
 
     //Init Toolbar
-    private void initToolbar(String title){
+    private void initToolbar(String title, int id){
 
         //Set StatusBarColor transparent
         getWindow().setStatusBarColor(Color.TRANSPARENT);
@@ -181,6 +192,16 @@ public class PostActivity extends AppCompatActivity {
         postToolbar = (Toolbar) findViewById(R.id.postToolbar);
         setSupportActionBar(postToolbar);
         initCollapsingToolbar(title);
+
+
+        isItemSelected = PostDB.getInstance(getApplicationContext()).getDbPostIsFav(id);
+        if(isItemSelected){
+            Log.d("SelectedItem", " "+ isItemSelected);
+
+
+        }else {
+            Log.d("SelectedItem", " " + isItemSelected);
+        }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -245,6 +266,12 @@ public class PostActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.add_to_favorite_menu, menu);
+
+        if(isItemSelected) {
+            menu.findItem(R.id.add_as_favorite).setIcon(getResources().getDrawable(R.drawable.ic_favorite_white_24dp, getTheme()));
+        }else {
+            menu.findItem(R.id.add_as_favorite).setIcon(getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp, getTheme()));
+        }
         return true;
     }
 
