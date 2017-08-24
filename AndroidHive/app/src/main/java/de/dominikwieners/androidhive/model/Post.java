@@ -37,13 +37,14 @@ public class Post {
     private String wpExcerpt;
     private String wpContent;
 
+
     private boolean isFavorite;
 
     public Post(){
 
     }
 
-    public Post(int sqLiteId, int wpPostId, String wpTitle, int isFavorite) {
+    public Post(int sqLiteId, int wpPostId, String wpTitle, String wpExcerpt, int isFavorite) {
 
         this.sqLiteId = sqLiteId;
         this.wpPostId = wpPostId;
@@ -101,6 +102,8 @@ public class Post {
     public String getWpContent() {
         return wpContent;
     }
+
+
 
     public boolean isFavorite() {
         return isFavorite;

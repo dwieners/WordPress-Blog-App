@@ -41,6 +41,7 @@ public class PostDB {
         public static final String TABLE_NAME = "post";
         public static final String COLNAME_POSTID = "postID";
         public static final String COLNAME_TITLE = "title";
+        public static final String COLNAME_EXCERPT = "excerpt";
         public static final String COLNAME_ISFAV = "isFavorite";
     }
 
@@ -50,6 +51,7 @@ public class PostDB {
                     PostItem._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     PostItem.COLNAME_POSTID + " INT," +
                     PostItem.COLNAME_TITLE + " TEXT," +
+                    PostItem.COLNAME_EXCERPT + " TEXT," +
                     PostItem.COLNAME_ISFAV + " TINYINT(1)" +
                     ")";
 
@@ -88,11 +90,11 @@ public class PostDB {
         SQLiteDatabase sqLiteDatabase = helper.getReadableDatabase();
         ArrayList<Post> postList = new ArrayList<>();
         try {
-            Cursor cursor = sqLiteDatabase.query(PostItem.TABLE_NAME, new String[]{PostItem._ID, PostItem.COLNAME_POSTID, PostItem.COLNAME_TITLE, PostItem.COLNAME_ISFAV}, null, null, null, null, null);
+            Cursor cursor = sqLiteDatabase.query(PostItem.TABLE_NAME, new String[]{PostItem._ID, PostItem.COLNAME_POSTID, PostItem.COLNAME_TITLE, PostItem.COLNAME_EXCERPT, PostItem.COLNAME_ISFAV}, null, null, null, null, null);
 
             try {
                 while (cursor.moveToNext()) {
-                    Post tmpPost = new Post(cursor.getInt(0), cursor.getInt(1), cursor.getString(2), cursor.getInt(3));
+                    Post tmpPost = new Post(cursor.getInt(0), cursor.getInt(1), cursor.getString(2), cursor.getString(3), cursor.getInt(4));
                     postList.add(tmpPost);
                 }
 
@@ -118,11 +120,11 @@ public class PostDB {
 
         try {
 
-            Cursor cursor = sqLiteDatabase.query(PostItem.TABLE_NAME, new String[]{PostItem._ID, PostItem.COLNAME_POSTID, PostItem.COLNAME_TITLE, PostItem.COLNAME_ISFAV}, null, null, null, null, null);
+            Cursor cursor = sqLiteDatabase.query(PostItem.TABLE_NAME, new String[]{PostItem._ID, PostItem.COLNAME_POSTID, PostItem.COLNAME_TITLE, PostItem.COLNAME_EXCERPT, PostItem.COLNAME_ISFAV}, null, null, null, null, null);
 
             try {
                 while (cursor.moveToNext()) {
-                    Post tmpPost = new Post(cursor.getInt(0), cursor.getInt(1), cursor.getString(2), cursor.getInt(3));
+                    Post tmpPost = new Post(cursor.getInt(0), cursor.getInt(1), cursor.getString(2), cursor.getString(3), cursor.getInt(4));
                     postList.add(tmpPost);
                 }
 
@@ -148,7 +150,7 @@ public class PostDB {
 
     }
 
-    public long insert (int wpPostID, String wpTitle, boolean isFavorite){
+    public long insert (int wpPostID, String wpTitle, String wpExcerpt, boolean isFavorite){
 
         //Data heraus holen aus der DB
         TodoItemDbHelper helper = new TodoItemDbHelper(context);
@@ -159,6 +161,7 @@ public class PostDB {
             //Zuordnung spalten und values
             values.put(PostItem.COLNAME_POSTID, wpPostID);
             values.put(PostItem.COLNAME_TITLE, wpTitle);
+            values.put(PostItem.COLNAME_EXCERPT, wpExcerpt);
             values.put(PostItem.COLNAME_ISFAV, isFavorite);
 
             return db.insert(PostItem.TABLE_NAME, PostItem.COLNAME_TITLE, values);
@@ -178,6 +181,7 @@ public class PostDB {
         try{
             ContentValues values = new ContentValues();
             values.put(PostItem.COLNAME_TITLE, post.getWpTitle());
+            values.put(PostItem.COLNAME_EXCERPT, post.getWpExcerpt());
             values.put(PostItem.COLNAME_ISFAV, post.isFavorite());
 
             //Ist die ID die ID aus dem Post Objekt

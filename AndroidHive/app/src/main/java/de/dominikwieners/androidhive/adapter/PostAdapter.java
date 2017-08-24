@@ -37,9 +37,10 @@ import retrofit2.Response;
 
 public class PostAdapter extends RecyclerView.Adapter{
 
+
     private Context context;
     private List<Post> posts;
-    private Post currentPost;
+
 
 
     //Constructor
@@ -47,6 +48,7 @@ public class PostAdapter extends RecyclerView.Adapter{
         this.context = context;
         this.posts = posts;
     }
+
 
 
 
@@ -62,7 +64,6 @@ public class PostAdapter extends RecyclerView.Adapter{
         final PostViewHolder postHolder = (PostViewHolder) holder;
 
         postHolder.setCurrentPost(post);
-
 
     }
 
@@ -81,7 +82,7 @@ public class PostAdapter extends RecyclerView.Adapter{
 
     private static class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-     //   private ImageView cardImage;
+
         private TextView cardPt;
         private TextView cardEx;
 
@@ -111,20 +112,28 @@ public class PostAdapter extends RecyclerView.Adapter{
         }
 
 
+        ///////////////////////////////////////////////////
+        // Activate PostActivity
+        /////////////////////////////////////////////////
+
         @Override
         public void onClick(View v) {
-
 
             String title = currentPost.getTitle().get("rendered").toString().replaceAll("\"", "");
             String content = currentPost.getContent().get("rendered").toString().replaceAll("\"", "");
             String excerpt = currentPost.getExcerpt().get("rendered").toString().replaceAll("\"", "");
 
             content = contentFilter(content, "<ins", "</ins>");
+            content = videoFilter(content, "<iframe","/iframe>");
 
             Intent intent = PostActivity.createIntent(v.getContext(), currentPost.getId(), currentPost.getFeatured_media(), Html.fromHtml(title, Html.FROM_HTML_MODE_LEGACY).toString() , excerpt, content);
             v.getContext().startActivity(intent);
         }
 
+
+        /////////////////////////////////////////////////////////////////////////
+        //  Remove Ads
+        ////////////////////////////////////////////////////////////////////////
 
         public String contentFilter(String content, String first, String last){
 
@@ -149,7 +158,44 @@ public class PostAdapter extends RecyclerView.Adapter{
             }
             return contentResult;
         }
+
+
+        /////////////////////////////////////////////////////////////////////////
+        //  Add VideoWrapper clasa to make it Responsive
+        ////////////////////////////////////////////////////////////////////////
+
+
+        public String videoFilter(String content, String first, String last){
+
+            String oldContentSubstring;
+            String newContentSubstring;
+            String contentResult;
+
+
+            //set index
+            int firstIndex = content.indexOf(first);
+            int lastIndex = content.lastIndexOf(last);
+
+            if(firstIndex != -1 || lastIndex != -1) {
+
+                //get substring
+                oldContentSubstring = content.substring(firstIndex, lastIndex + last.length());
+
+                newContentSubstring = "<div class=\"videoWrapper\">" + oldContentSubstring + "</div>";
+
+                contentResult = content.replace(oldContentSubstring, newContentSubstring);
+
+            }else {
+                contentResult = content;
+            }
+
+            return contentResult;
+
+        }
+
     }
+
+
 
 
 

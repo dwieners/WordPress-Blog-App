@@ -59,6 +59,10 @@ public class PostActivity extends AppCompatActivity {
         return intent;
     }
 
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +72,7 @@ public class PostActivity extends AppCompatActivity {
         int id = (int) getIntent().getSerializableExtra("de.dominikwieners.androidhive.postId");
         int featuredMedia = (int) getIntent().getSerializableExtra("de.dominikwieners.androidhive.featuredMedia");
         String title =  getIntent().getSerializableExtra("de.dominikwieners.androidhive.postTitle").toString();
-        String content = getIntent().getSerializableExtra("de.dominikwieners.androidhive.postContent").toString().replaceAll("\\\\n", "").replaceAll("\\\\r", "").replaceAll("\\\\", "");;
+        String content = getIntent().getSerializableExtra("de.dominikwieners.androidhive.postContent").toString().replaceAll("\\\\n", "<br>").replaceAll("\\\\r", "").replaceAll("\\\\", "");;
 
 
         initToolbar(title, id);
@@ -146,7 +150,7 @@ public class PostActivity extends AppCompatActivity {
             item.setIcon(getResources().getDrawable(R.drawable.ic_favorite_white_24dp,getTheme()));
 
             isItemSelected = true;
-            PostDB.getInstance(getApplicationContext()).insert(id, title, isItemSelected);
+            PostDB.getInstance(getApplicationContext()).insert(id, title, excerpt, isItemSelected);
         }else {
             item.setIcon(getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp,getTheme()));
             isItemSelected = false;
